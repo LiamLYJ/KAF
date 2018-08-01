@@ -109,64 +109,48 @@ def get_focus_index(folder, type = '*.png'):
         count += 1
     return focus_index
 
-def make_dump(input_path, dump_name, check_results = False):
-    img_files_list = []
-    labels_list = []
-    for root, dirs, files in os.walk(input_path):
-        if dirs:
-            continue
-        img_files = []
-        labels = []
-        # files.sort()
-        # sort by numer
-        sort_nicely(files)
-        # print (files)
-        for label_index, file in enumerate(files):
-            image_name = os.path.join(root, file)
-            img_files.append(image_name)
-            labels.append(label_index)
-        img_files_list.append(img_files)
-        labels_list.append(labels)
-    data = {}
-    data['files_list'] = img_files_list
-    data['labels_list'] = labels_list
-    with open(os.path.join(dump_name), 'wb') as f:
-        pickle.dump(data, f)
-        print ('dump done')
+# def make_dump(input_path, dump_name, check_results = False):
+#     img_files_list = []
+#     labels_list = []
+#     for root, dirs, files in os.walk(input_path):
+#         if dirs:
+#             continue
+#         img_files = []
+#         labels = []
+#         # files.sort()
+#         # sort by numer
+#         sort_nicely(files)
+#         # print (files)
+#         for label_index, file in enumerate(files):
+#             image_name = os.path.join(root, file)
+#             img_files.append(image_name)
+#             labels.append(label_index)
+#         img_files_list.append(img_files)
+#         labels_list.append(labels)
+#     data = {}
+#     data['files_list'] = img_files_list
+#     data['labels_list'] = labels_list
+#     with open(os.path.join(dump_name), 'wb') as f:
+#         pickle.dump(data, f)
+#         print ('dump done')
+#
+#     if check_results:
+#         data_loader = get_loader(dump_name, transform = None, batch_size=2, shuffle =
+#                                  True, num_workers = 1)
+#         print ('len: ', len(data_loader))
+#         for i, (images, labels ) in enumerate(data_loader):
+#             print ('****************')
+#             print ('image shape', images.shape)
+#             print ('labels shape: ', labels.shape)
+#
+# def check_dump(pkl_file):
+#     with open(pkl_file, 'rb') as handle:
+#         data = pickle.load(handle)
 
-    if check_results:
-        data_loader = get_loader(dump_name, transform = None, batch_size=2, shuffle =
-                                 True, num_workers = 1)
-        print ('len: ', len(data_loader))
-        for i, (images, labels ) in enumerate(data_loader):
-            print ('****************')
-            print ('image shape', images.shape)
-            print ('labels shape: ', labels.shape)
-
-
-def test(dump_name):
-    files= []
-    labels = []
-    for i in range(5):
-        file_name = './data/images/%d.png'%(i)
-        files.append(file_name)
-        labels.append(i)
-    files_list = []
-    labels_list = []
-    files_list.append(files)
-    labels_list.append(labels)
-    for _ in range(11):
-        files_list.append(files)
-        labels_list.append(labels)
-    data = {}
-    data['files_list'] = files_list
-    data['labels_list'] = labels_list
-
-    with open(dump_name, 'bw' ) as f:
-        pickle.dump(data, f)
-        print ('dump done')
-
-    data_loader = get_loader(dump_name, transform = None, batch_size=2, shuffle =
+def test():
+    data_folder = './data/tmp'
+    ref_folder = './data/tmp/0000'
+    data_loader = get_loader(data_folder, ref_folder, transform = None, batch_size=2, shuffle =
                              True, num_workers = 1)
     print ('len: ', len(data_loader))
     for i, (images, labels ) in enumerate(data_loader):
@@ -174,9 +158,11 @@ def test(dump_name):
         print ('image shape', images.shape)
         print ('labels shape: ', labels.shape)
 
+
 if __name__ == '__main__':
-    # test('tmp.pkl')
+    test()
+    # check_dump('tmp.pkl')
     # cut_roi('/Users/lyj/Desktop/af_data/', './data/af_data')
-    process('./data/af_data','./data/tmp', range_size = 3, step = 6)
+    # process('./data/af_data','./data/tmp', range_size = 3, step = 6)
     # process('./data/af_data','./data/tmp', range_size = 3, step = 6, remove_flag = False)
     # make_dump('./data/tmp', './data/tmp.pkl', check_results = True)
